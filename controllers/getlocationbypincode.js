@@ -1,25 +1,25 @@
 const needle = require("needle");
-exports.getlocationByPincode = (req, res) => {
+exports.getlocationByPincode = async (req, res) => {
   try {
-    const { postCode, countryCode } = req.params;
+    const { postCode, countryCode = "IN" } = req.body;
+
     if (postCode) {
-      needle.get(`http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode},${countryCode}&appid=${APIkey}`, (err, response) => {
+      await needle.get(`http://api.openweathermap.org/geo/1.0/zip?zip=${zipCode},${countryCode}&appid=${APIkey}`, (err, response) => {
         if (err) {
           res.send({
             status: err.cod,
             message: err.message
           })
         } else {
-      
-            res.send({
-              status: 200,
-              response: response.data
-            })
-          }
+          res.send({
+            status: 200,
+            response: response.data
+          })
         }
-      })
 
-    } else {
+      });
+    }
+    else {
       res.send({
         status: 400,
         message: "please provide required field"
